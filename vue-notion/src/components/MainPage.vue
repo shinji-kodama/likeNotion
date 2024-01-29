@@ -21,7 +21,7 @@
 
       <!-- ノート追加ボタン -->
       <button class="transparent" @click="onClickButtonAdd">
-        <i class="fas fa-plus-square"></i>ノートを追加
+        <i class="fas fa-plus-square"></i>ノートを追加test
       </button>
         
     </div>
