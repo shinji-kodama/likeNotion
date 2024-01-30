@@ -5,6 +5,7 @@
       <!-- ノートリスト -->
       <!-- $event"ないとmutation errorに-->
       <!-- 出来た瞬間、layerは１に-->
+      <draggable v-bind:list="noteList" group="notes">
       <NoteItem
         v-for="note in noteList"
         v-bind:note="note"
@@ -12,12 +13,14 @@
         v-bind:key="note.id"
         @mouseover="note.mouseover = $event"
         @delete="onDeleteNote"
+        @select="onSelectNote"
         @editStart="onEditNoteStart"
         @editEnd="onEditNoteEnd"
         @input="note.name = $event"
         @addChild="onAddChildNote"
         @addNoteAfter="onAddNoteAfter"
       />
+    </draggable>
 
       <!-- ノート追加ボタン -->
       <button class="transparent" @click="onClickButtonAdd">
@@ -26,18 +29,30 @@
         
     </div>
     <div class="right-view" @click.self="onEditNoteEnd()">
-      右ビュー
+      <template v-if="selectedNote == null">
+        <div class="no-selected-note">ノートを選択してください</div>
+      </template>
+      <template v-else>
+        <div class="path">
+          <small>{{selectedPath}}</small>
+        </div>
+        <div class="note-content">
+          <h3 class="note-title">{{selectedNote.name}}</h3>
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
   import NoteItem from '@/components/parts/NoteItem.vue'
+  import draggable from 'vuedraggable';
 
 export default {
   data(){
     return{
       noteList : [],
+      selectedNote : null,
     }
   },
   methods: {
@@ -51,6 +66,7 @@ export default {
         name : `新規ノート-${layer}-${targetList.length}`,
         mouseover : false,
         editing : false,
+        selected : false,
         children : [],
         layer : layer,
       };
@@ -67,6 +83,19 @@ export default {
       const targetList = parentNote == null ? this.noteList : parentNote.children;
       const index = targetList.indexOf(note);
       targetList.splice(index, 1);
+    },
+    onSelectNote : function(targetNote) {
+      // 再帰的にノートの選択状態を更新
+      const updateSelectStatus = function(targetNote, noteList) {
+        for (let note of noteList) {
+          note.selected = (note.id === targetNote.id);
+          updateSelectStatus(targetNote, note.children);
+        }
+      }
+      updateSelectStatus(targetNote, this.noteList);
+      
+      // 選択中ノート情報を更新
+      this.selectedNote = targetNote;
     },
     onEditNoteStart : function(editNote, parentNote) {
       const targetList = parentNote == null ? this.noteList : parentNote.children;
@@ -90,12 +119,27 @@ export default {
       const layer = parentNote == null ? 1 : note.layer;//1か何番目の子供か
       const index = targetList.indexOf(note);////何番目の要素の番号か、特定して格納
       this.onAddNoteCommon(targetList, layer, index);
-      console.log(targetList);
-      console.log(targetList.length);
+      // targetNoteとnoteListとthis.noteListはなんだったか6-2
+    },
+  },
+  computed: {
+    selectedPath : function() {
+      const searchSelectedPath = function(noteList, path) {
+        for (let note of noteList) {
+          const currentPath = path == null ? note.name : `${path} / ${note.name}`;
+          if (note.selected) return currentPath;
+          const selectedPath = searchSelectedPath(note.children, currentPath);
+          if (selectedPath.length > 0) return selectedPath;
+          // console.log(path);パンくずに親が入ってるから中身はnote.name
+        }
+        return '';
+      }
+      return searchSelectedPath(this.noteList);
     },
   },
   components: {
     NoteItem,
+    draggable,
   },
 }
 </script>
@@ -111,6 +155,24 @@ export default {
   .right-view {
     flex-grow: 1;
     padding: 10px;
+    .no-selected-note {
+      text-align: center;
+      font-size: 25px;
+      margin: 20px;
+    }
+    .path {
+      text-align: left;
+      margin-bottom: 50px;      
+    }
+    .note-content {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: left;
+      .note-title {
+        margin-bottom: 25px;
+      }
+    }
   }
+  
 }
 </style>

@@ -3,7 +3,8 @@
     <div class="note"
     @mouseover="onMouseOver"
     @mouseleave="onMouseLeave"
-    v-bind:class="{mouseover: note.mouseover && !note.editing}"
+    @click="onSelect(note)"
+    v-bind:class="{mouseover: note.mouseover && !note.editing, selected: note.selected}"
     >
       <template v-if="note.editing">
         <input v-bind:value="value" @input="$emit('input',$event.target.value)" class="transparent" @keypress.enter="onEditEnd" />
@@ -31,24 +32,28 @@
       </template>
     </div>
     <div class="child-note">
-      <NoteItem
-        v-for="childNote in note.children"
-        v-bind:note="childNote"
-        v-bind:layer="layer + 1"
-        v-bind:parentNote="note"
-        v-bind:key="childNote.id"
-        @mouseover="childNote.mouseover = $event"
-        @delete="onClickDelete"
-        @editStart="onClickEdit"
-        @editEnd="onEditEnd"
-        @addChild="onClickChildNote"
-        @addNoteAfter="onClickAddNoteAfter"
-      />
+      <draggable v-bind:list="note.children" group="notes">
+        <NoteItem
+          v-for="childNote in note.children"
+          v-bind:note="childNote"
+          v-bind:layer="layer + 1"
+          v-bind:parentNote="note"
+          v-bind:key="childNote.id"
+          @mouseover="childNote.mouseover = $event"
+          @delete="onClickDelete"
+          @select="onSelect"
+          @editStart="onClickEdit"
+          @editEnd="onEditEnd"
+          @addChild="onClickChildNote"
+          @addNoteAfter="onClickAddNoteAfter"
+        />
+      </draggable>
     </div>
   </div>
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 export default {
   name: 'NoteItem',
   props: [
@@ -62,6 +67,9 @@ export default {
     },
     onMouseLeave : function() {
       this.$emit('mouseover', false);
+    },
+    onSelect : function(note) {
+      this.$emit('select', note);
     },
     onClickDelete : function(parentNote, note) {
       this.$emit('delete', parentNote, note);
@@ -79,6 +87,9 @@ export default {
       this.$emit('addNoteAfter', parentNote, note);
     },
   },
+  components: {
+    draggable,
+  },
 }
 </script>
 
@@ -92,6 +103,11 @@ export default {
   &.mouseover {
     background-color: rgb(232, 231, 228);
     cursor: pointer;
+  }
+  &.selected {
+    color: black;
+    background-color: rgb(232, 231, 228);
+    font-weight: 600;
   }
   .note-icon {
     margin-left: 10px;
