@@ -9,7 +9,7 @@
         v-modelを使わずに@inuputで子供からupdateをかけられるようにする-->
       <template v-if="widget.type == 'heading'">
         <input
-          :value="widget.text" @input="$emit('update:widget.text', $event.target.value)"
+          v-model="widget.text"
           class="heading transparent"
           placeholder="見出し"
           v-bind:ref="'widget-heading-' + widget.id"
@@ -20,7 +20,7 @@
       </template>
       <template v-if="widget.type == 'body'">
         ・<input
-            :value="widget.text" @input="$emit('update:widget.text', $event.target.value)"
+            v-model="widget.text"
             class="body transparent"
             placeholder="本文"
             v-bind:ref="'widget-body-' + widget.id"
@@ -31,7 +31,7 @@
       </template>
       <template v-if="widget.type == 'code'">
         <textarea
-            :value="widget.text" @input="$emit('update:widget.text', $event.target.value)"
+          v-model="widget.text"
             class="code"
             rows="1"
             placeholder="コード"
@@ -81,7 +81,6 @@
             v-bind:key="childWidget.id"
             @mouseover="childWidget.mouseover = $event"
             @type="childWidget.type = $event"
-            @text="(s)=>childWidget.text = s"
             @delete="onClickDelete"
             @addChild="onClickChildWidget"
             @addWidgetAfter="onClickAddWidgetAfter"
@@ -92,7 +91,7 @@
   </template>
   
   <script>
-   import draggable from 'vuedraggable'
+  import draggable from 'vuedraggable'
   export default {
     name: 'WidgetItem',
     props: [
