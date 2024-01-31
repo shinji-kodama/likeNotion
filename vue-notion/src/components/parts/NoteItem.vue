@@ -7,7 +7,7 @@
     v-bind:class="{mouseover: note.mouseover && !note.editing, selected: note.selected}"
     >
       <template v-if="note.editing">
-        <input v-bind:value="value" @input="$emit('input',$event.target.value)" class="transparent" @keypress.enter="onEditEnd" />
+        <input v-bind:value="note.value" @input="$emit('input',$event.target.value)" class="transparent" @keypress.enter="onEditEnd" />
       </template>
       <template v-else>
         <div class="note-icon">
@@ -15,6 +15,7 @@
         </div>
         <div class="note-name">{{note.name}}</div>
 
+        <!-- v-show=mouseoverだと「なんの？（undifined）」って聞かれるのでnote.を追加 -->
         <div v-show="note.mouseover" class="buttons">
           <div class="button-icon" v-if="layer < 3" @click="onClickChildNote(note)">
             <i class="fas fa-sitemap"></i>
@@ -32,7 +33,8 @@
       </template>
     </div>
     <div class="child-note">
-      <!-- @mouseover="childNote.mouseover = $event"でmutationerror回避 -->
+      <!-- @mouseover="childNote.mouseover = $event"でmutationerror回避 
+      @mouseover="childNote.mouseover = $event" 子供のリストのアイコンを表示-->
       <draggable v-bind:list="note.children" group="notes">
         <NoteItem
           v-for="childNote in note.children"

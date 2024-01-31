@@ -39,11 +39,15 @@
         </div>
         <div class="note-content">
           <h3 class="note-title">{{selectedNote.name}}</h3>
+          <!-- @mouseover="widget.mouseover = $event"ほんとどのコンポーネントにも要る 
+          @type="widget.type = $event" 一旦退避-->
           <WidgetItem
             v-for="widget in selectedNote.widgetList"
             v-bind:widget="widget"
             v-bind:layer="1"
             v-bind:key="widget.id"
+            @mouseover="widget.mouseover = $event"
+            @type="widget.type = $event"
             @delete="onDeleteWidget"
             @addChild="onAddChildWidget"
             @addWidgetAfter="onAddWidgetAfter"
