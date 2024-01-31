@@ -53,6 +53,7 @@
               v-bind:key="widget.id"
               @mouseover="widget.mouseover = $event"
               @type="widget.type = $event"
+              @text="widget.text = $event"
               @delete="onDeleteWidget"
               @addChild="onAddChildWidget"
               @addWidgetAfter="onAddWidgetAfter"

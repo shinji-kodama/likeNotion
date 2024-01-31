@@ -19,7 +19,6 @@
         />
       </template>
       <template v-if="widget.type == 'body'">
-
         ・<input
             :value="widget.text" @input="$emit('update:widget.text', $event.target.value)"
             class="body transparent"
@@ -63,7 +62,7 @@
                 <a class="dropdown-item" @click="changeCode" >ソースコード</a>
                 <!-- 
                 <a class="dropdown-item" @click="$emit('update:widget.type', 'heading')">見出し</a>
-                <a class="dropdown-item"  @click="$emit('update:widget.type', body)" >本文</a>
+                <a class="dropdown-item" @click="$emit('update:widget.type', body)" >本文</a>
                 <a class="dropdown-item" @click="$emit('update:widget.type', 'code')" >ソースコード</a>
                 <a class="dropdown-item" @click="widget.type = 'heading'">見出し</a>
                 <a class="dropdown-item" @click="widget.type = 'body'" >本文</a>
@@ -82,7 +81,7 @@
             v-bind:key="childWidget.id"
             @mouseover="childWidget.mouseover = $event"
             @type="childWidget.type = $event"
-            @text="childWidget.text = $event"
+            @text="(s)=>childWidget.text = s"
             @delete="onClickDelete"
             @addChild="onClickChildWidget"
             @addWidgetAfter="onClickAddWidgetAfter"
@@ -135,30 +134,7 @@
             e.preventDefault();
         }
       },
-    //   resizeCodeTextarea : function() {
-        // console.log('aaaa');
-        // if (this.widget.type !== 'code') return;
-        // if(this.textarea !== null){
-        //↑この条件式でないとif文がエラー。でもtextareaが空の場合はif文で割けないと結局undifinedエラー
-            // const textarea = this.$refs[`widget-code-${this.widget.id}`];
-            // console.log(textarea);
-            // const promise = new Promise(function() {
-            // textarea.style.height = 'auto';
-            // :style=""
-            // console.log(promise);
-    //         });
-    //    },
-
-        // promise = new Promise(function(resolve) {
-        //     resolve(textarea.style.height = 'auto')
-        //     console.log(promise);
-        // });
-
-        // promise.then(function(){
-        //     textarea.style.height = textarea.scrollHeight + 'px'
-        //     console.log('bbbb');
-        // });
-
+      //////ここで発火しない
       resizeCodeTextarea : function() {
       if (this.widget.type !== 'code') return;
       const textarea = this.$refs[`widget-code-${this.widget.id}`];
@@ -173,7 +149,6 @@
       },
       changeHeading : function(){
         this.$emit('type', 'heading');
-        // this.$emit('text', text);
       },
       changeBody : function(){
         this.$emit('type', 'body');
