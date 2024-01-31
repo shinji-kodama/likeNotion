@@ -74,16 +74,16 @@
       <div class="child-widget">
         <draggable v-bind:list="widget.children" group="widgets">
             <WidgetItem
-            v-for="childWidget in widget.children"
-            v-bind:widget="childWidget"
-            v-bind:parentWidget="widget"
-            v-bind:layer="layer + 1"
-            v-bind:key="childWidget.id"
-            @mouseover="childWidget.mouseover = $event"
-            @type="childWidget.type = $event"
-            @delete="onClickDelete"
-            @addChild="onClickChildWidget"
-            @addWidgetAfter="onClickAddWidgetAfter"
+              v-for="childWidget in widget.children"
+              v-bind:widget="childWidget"
+              v-bind:parentWidget="widget"
+              v-bind:layer="layer + 1"
+              v-bind:key="childWidget.id"
+              @mouseover="childWidget.mouseover = $event"
+              @type="childWidget.type = $event"
+              @delete="onClickDelete"
+              @addChild="onClickChildWidget"
+              @addWidgetAfter="onClickAddWidgetAfter"
             />
         </draggable>
       </div>
@@ -135,16 +135,17 @@
       },
       //////ここで発火しない
       resizeCodeTextarea : function() {
-      if (this.widget.type !== 'code') return;
-      const textarea = this.$refs[`widget-code-${this.widget.id}`];
-      const promise = new Promise(function(resolve) {
-        resolve(textarea.style.height = 'auto')
-        console.log('bbbb');
-      });
-      promise.then(function(){
-        textarea.style.height = textarea.scrollHeight + 'px'
-        console.log('cccs');
-      });
+        console.log("発火してますね")
+        if (this.widget.type !== 'code') return;
+        const textarea = this.$refs[`widget-code-${this.widget.id}`];
+        const promise = new Promise(function(resolve) {
+          resolve(textarea.style.height = 'auto')
+          console.log('bbbb');
+        });
+        promise.then(function(){
+          textarea.style.height = textarea.scrollHeight + 'px'
+          console.log('cccs');
+        });
       },
       changeHeading : function(){
         this.$emit('type', 'heading');
