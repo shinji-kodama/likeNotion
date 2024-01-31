@@ -9,7 +9,8 @@
         v-modelを使わずに@inuputで子供からupdateをかけられるようにする-->
       <template v-if="widget.type == 'heading'">
         <input
-          :value="widget.text" @input="$emit('update:widget.text', $event.target.value)"
+          :value="widget.text"
+          @input="onInputText"
           class="heading transparent"
           placeholder="見出し"
           v-bind:ref="'widget-heading-' + widget.id"
@@ -20,7 +21,8 @@
       </template>
       <template v-if="widget.type == 'body'">
         ・<input
-            :value="widget.text" @input="$emit('update:widget.text', $event.target.value)"
+            :value="widget.text"
+            @input="onInputText"
             class="body transparent"
             placeholder="本文"
             v-bind:ref="'widget-body-' + widget.id"
@@ -31,7 +33,8 @@
       </template>
       <template v-if="widget.type == 'code'">
         <textarea
-            :value="widget.text" @input="$emit('update:widget.text', $event.target.value)"
+            :value="widget.text"
+            @input="onInputText"
             class="code"
             rows="1"
             placeholder="コード"
@@ -81,7 +84,7 @@
             v-bind:key="childWidget.id"
             @mouseover="childWidget.mouseover = $event"
             @type="childWidget.type = $event"
-            @text="(s)=>childWidget.text = s"
+            @text="childWidget.text = $event"
             @delete="onClickDelete"
             @addChild="onClickChildWidget"
             @addWidgetAfter="onClickAddWidgetAfter"
@@ -158,6 +161,9 @@
       },
       keepText : function(widget){
         this.$emit('text', widget.text);
+      },
+      onInputText : function(e) {
+        this.$emit('text', e.target.value);
       },
 
 
