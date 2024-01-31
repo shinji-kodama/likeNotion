@@ -32,6 +32,7 @@
       </template>
     </div>
     <div class="child-note">
+      <!-- @mouseover="childNote.mouseover = $event"でmutationerror回避 -->
       <draggable v-bind:list="note.children" group="notes">
         <NoteItem
           v-for="childNote in note.children"
@@ -63,10 +64,10 @@ export default {
   ],
   methods: {
     onMouseOver : function() {
-      this.$emit('mouseover', true);
+      this.$emit('mouseover', true);//回避
     },
     onMouseLeave : function() {
-      this.$emit('mouseover', false);
+      this.$emit('mouseover', false);//回避
     },
     onSelect : function(note) {
       this.$emit('select', note);
